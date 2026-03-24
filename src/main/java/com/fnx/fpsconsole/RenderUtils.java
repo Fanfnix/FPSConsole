@@ -13,4 +13,9 @@ public enum RenderUtils {
     static final char SKY_PIXEL = '░';
     static final char WALL_PIXEL = '▒';
     static final int BLACK_COLOR_IMAGE = -16777216;
+    static final double ROUND_CONSTANT = 1000.0;
+
+    public static double degreeToRadian(final double degree) {
+        return Math.round(Math.toRadians(degree) * RenderUtils.ROUND_CONSTANT) / RenderUtils.ROUND_CONSTANT;
+    }
 }

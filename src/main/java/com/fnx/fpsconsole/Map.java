@@ -30,4 +30,8 @@ public class Map {
             }
         }
     }
+
+    public int get(int x, int y) {
+        return this.maze[y][x];
+    }
 }

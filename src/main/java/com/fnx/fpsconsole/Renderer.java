@@ -24,9 +24,45 @@ public class Renderer {
 
     private double[] getHeightsPerceived(final Point origin, final int direction, final Map map) {
         final double[] heightsPerceived = new double[RenderUtils.SCREEN_WIDTH];
-        for (int column = 0; column < RenderUtils.SCREEN_WIDTH; column++) {
-            heightsPerceived[column] = Math.min(column / 4, 20);
+        double angle = direction - RenderUtils.VIEWING_ANGLE / 2;
+        final double angleStep = RenderUtils.VIEWING_ANGLE / RenderUtils.SCREEN_WIDTH;
+        for (int column = 0; column < RenderUtils.SCREEN_WIDTH; column++, angle+=angleStep) {
+            heightsPerceived[column] = this.getHeightPerceived(origin, angle, map);
         }
         return heightsPerceived;
+    }
+
+    private double getHeightPerceived(final Point origin, final double angle, final Map map) {
+        final double radianAngle = RenderUtils.degreeToRadian(angle);
+        final Point end = new Point((int)(origin.x - RenderUtils.VIEWING_DISTANCE * Math.cos(radianAngle)),
+                                    (int)(origin.y - RenderUtils.VIEWING_DISTANCE * Math.sin(radianAngle)));
+        final Point obstacle = this.getFromTo(map, origin, end);
+    }
+
+    private Point getFromTo(final Map map, final Point origin, final Point end) {
+        if (map.get(origin.x, origin.y) != 0) return null;
+
+        final int deltaX = Math.abs(end.x - origin.x);
+        final int deltaY = Math.abs(end.y - origin.y);
+        final int stepX = Integer.compare(end.x, origin.x);
+        final int stepY = Integer.compare(end.y, origin.y);
+        int error = deltaX - deltaY;
+        int x = origin.x;
+        int y = origin.y;
+        while (x != end.x || y != end.y) {
+            if (map.get(x, y) != 0) {
+                return new Point(x, y);
+            }
+            final int error2 = error * 2;
+            if (error2 > -deltaY) {
+                error -= deltaY;
+                x += stepX;
+            }
+            if (error2 < deltaX) {
+                error += deltaX;
+                y += stepY;
+            }
+        }
+        return null;
     }
 }
