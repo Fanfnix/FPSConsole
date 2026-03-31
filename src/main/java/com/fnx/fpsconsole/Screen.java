@@ -24,7 +24,17 @@ public class Screen {
 
     public void verticalLine(final int numColumn, final int startRow, final int endRow, final char pixel) {
         for (int row = startRow; row < endRow; row++) {
-            this.pixels[this.height - row - 1][numColumn] = pixel;
+            this.plot(numColumn, this.height - row - 1, pixel);
         }
+    }
+
+    private void plot(final int column, final int row, final char pixel) {
+        if (!this.isOutOfBound(column, row)) {
+            this.pixels[row][column] = pixel;
+        }
+    }
+
+    private boolean isOutOfBound(final int column, final int row) {
+        return (column < 0) || (column >= this.width) || (row < 0) || (row >= this.height);
     }
 }
